@@ -1,0 +1,71 @@
+###
+# macOS
+###
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+###
+# IDE
+###
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+\#*#
+.#*
+
+###
+# Local runs
+###
+# README example mounts ./downloads → /data inside the container
+/downloads/
+
+###
+# Logs and temp
+###
+*.log
+*.tmp
+*.temp
+.cache/
+
+###
+# Environment / secrets
+###
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.crt
+*.cer
+secrets/
+
+###
+# Python tooling (in case pre-commit creates caches locally)
+###
+__pycache__/
+*.py[cod]
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+
+###
+# Git worktrees
+###
+.worktrees/
+
+###
+# Project tooling that may appear in this workspace
+###
+.planning/
+.playwright-mcp/
+.superpowers/
+graphify-out/
+
+###
+# Windows
+###
+Thumbs.db
