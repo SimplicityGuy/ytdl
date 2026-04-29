@@ -34,14 +34,18 @@ jobs:
         with:
           python-version: '3.13'
 
-      - name: 🐳 Install hadolint
-        env:
-          HADOLINT_VERSION: v2.14.0
-        run: |
-          curl -fsSL -o /tmp/hadolint \
-            "https://github.com/hadolint/hadolint/releases/download/${HADOLINT_VERSION}/hadolint-Linux-x86_64"
-          sudo install -m 0755 /tmp/hadolint /usr/local/bin/hadolint
-          hadolint --version
+      - name: 💾 Cache arkade tools
+        uses: actions/cache@v5
+        with:
+          path: ~/.arkade
+          key: ${{ runner.os }}-tools-arkade-v1
+          restore-keys: |
+            ${{ runner.os }}-tools-arkade-
+
+      - name: 🔧 Install hadolint
+        uses: alexellis/arkade-get@1eef818e467c387d3f50cfe0d2c565d1cbe82b03  # master
+        with:
+          hadolint: latest
 
       - name: 🧹 Run pre-commit hooks
         uses: pre-commit/action@v3.0.1
