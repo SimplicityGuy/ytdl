@@ -73,6 +73,8 @@ docker inspect ytdl --format '{{json .Config.Labels}}' | jq
 | `.github/workflows/cleanup-cache.yml` | PR closed                               | Delete GitHub Actions caches scoped to the closed PR                    |
 | `.github/workflows/cleanup-images.yml` | monthly cron (15th), manual            | Prune untagged + old GHCR images, keep last 5 tagged                    |
 
+Dependency hygiene runs through `.github/dependabot.yml`: weekly Monday updates for `github-actions` (workflow action SHAs) and `docker` (base image). Both ecosystems are grouped so dependabot opens one PR per ecosystem rather than one PR per dependency.
+
 The build workflow:
 
 - Runs `pre-commit/action` so the same hooks that gate local commits gate CI.

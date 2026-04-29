@@ -139,6 +139,8 @@ docker build \
 | [`cleanup-cache.yml`](.github/workflows/cleanup-cache.yml)         | PR closed                               | Drop GitHub Actions caches scoped to the closed PR     |
 | [`cleanup-images.yml`](.github/workflows/cleanup-images.yml)       | monthly cron (15th), manual             | Prune untagged + old GHCR images, keep last 5 tagged   |
 
+Dependabot ([`.github/dependabot.yml`](.github/dependabot.yml)) opens grouped weekly PRs for `github-actions` and the `docker` base image.
+
 See [CLAUDE.md](CLAUDE.md) for development conventions and architecture notes.
 
 ## 📄 License
