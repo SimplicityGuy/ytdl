@@ -1,0 +1,56 @@
+# The Docker build only needs the Dockerfile and entrypoint.sh.
+# Everything else here is excluded to keep the build context small
+# and the layer cache stable across unrelated edits.
+
+# Git / VCS
+.git/
+.gitignore
+.gitattributes
+
+# GitHub (workflows, dependabot, issue templates)
+.github/
+
+# Documentation and project metadata
+*.md
+LICENSE
+
+# Pre-commit / lint configs (not needed inside the image)
+.pre-commit-config.yaml
+.editorconfig
+
+# IDE / editor noise
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+\#*#
+.#*
+
+# OS noise
+.DS_Store
+._*
+Thumbs.db
+
+# Local runtime artifacts
+/downloads/
+*.log
+*.tmp
+.cache/
+
+# Project tooling that may appear in this workspace
+.planning/
+.playwright-mcp/
+.superpowers/
+.worktrees/
+graphify-out/
+
+# Secrets — never ship into the build context
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.crt
+*.cer
+secrets/
