@@ -50,6 +50,8 @@ RUN pip install -U --no-cache-dir \
 COPY --chmod=0755 entrypoint.sh /entrypoint.sh
 
 RUN useradd -m -s /bin/bash ytdl
+# The user is created above, so the name resolves; DL3066 targets host-side uid mapping.
+# hadolint ignore=DL3066
 USER ytdl
 WORKDIR /data
 

@@ -9,12 +9,16 @@ if [ -z "$URL" ]; then
   exit 1
 fi
 
+# Remaining args are forwarded after the defaults so callers can add or override flags.
+shift
+
 yt-dlp \
   --quiet \
   --write-info-json \
   --print "before_dl:▶ %(title|?)s [%(id|?)s]" \
   --print "after_move:✓ %(title|?)s → %(filepath|?)s" \
   -o '%(uploader,playlist_uploader,playlist_title,playlist_id)s/%(title)s-%(id)s.%(ext)s' \
+  "$@" \
   "$URL"
 
 printf "🎉 capture done!\n"

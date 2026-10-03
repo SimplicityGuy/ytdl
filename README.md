@@ -48,6 +48,53 @@ downloads/<uploader>/<title>-<id>.<ext>
 downloads/<uploader>/<title>-<id>.info.json
 ```
 
+### Extra yt-dlp arguments
+
+Anything after the URL is passed straight to yt-dlp, after the built-in defaults, so you can add flags or override the defaults:
+
+```bash
+docker run --rm -v "$(pwd)/downloads:/data" \
+  ghcr.io/simplicityguy/ytdl:latest \
+  "https://www.youtube.com/watch?v=VIDEO_ID" --embed-metadata --embed-thumbnail
+```
+
+The URL is still required and must be the first argument.
+
+### Config file
+
+yt-dlp auto-loads `${XDG_CONFIG_HOME}/yt-dlp/config`, which for the `ytdl` user is `/home/ytdl/.config/yt-dlp/config`. Mount a file there, or mount one anywhere and point at it with `--config-locations`:
+
+```bash
+docker run --rm -v "$(pwd)/downloads:/data" \
+  -v "$(pwd)/yt-dlp.conf:/home/ytdl/.config/yt-dlp/config:ro" \
+  ghcr.io/simplicityguy/ytdl:latest \
+  "https://soundcloud.com/forss/flickermood"
+```
+
+Example `yt-dlp.conf` for SoundCloud (documentation only, nothing site-specific is baked into the image):
+
+```
+--embed-metadata
+--embed-thumbnail
+--write-thumbnail
+--convert-thumbnails jpg
+--write-description
+--parse-metadata "%(release_date,upload_date)s:%(meta_date)s"
+```
+
+### Plugins
+
+yt-dlp discovers plugin packages under `/home/ytdl/.config/yt-dlp/plugins/<package>/yt_dlp_plugins/{extractor,postprocessor}/`:
+
+```bash
+docker run --rm -v "$(pwd)/downloads:/data" \
+  -v "$(pwd)/my-plugin:/home/ytdl/.config/yt-dlp/plugins/my-plugin:ro" \
+  ghcr.io/simplicityguy/ytdl:latest \
+  "https://example.com/video" --use-postprocessor MyPP
+```
+
+Extractor plugins load automatically; postprocessor plugins only run when enabled with `--use-postprocessor NAME`.
+
 ## 🏛️ Architecture
 
 ```mermaid
