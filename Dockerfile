@@ -1,6 +1,27 @@
 # syntax=docker/dockerfile:1
 
 ARG PYTHON_VERSION=3
+
+# Wheel builder: some packages (e.g. xattr) publish no wheel for the newest
+# CPython that python:3 tracks, so pip falls back to a source build that needs
+# a C compiler. Build every wheel here, with the toolchain, and install only the
+# wheels in the runtime image so it stays compiler-free.
+FROM python:${PYTHON_VERSION}-slim-trixie AS wheels
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+# hadolint ignore=DL3008
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        gcc \
+        libc6-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# yt-dlp is intentionally unpinned: this image's purpose is to ship the latest yt-dlp.
+# hadolint ignore=DL3013
+RUN pip wheel --no-cache-dir --wheel-dir /wheels \
+        "yt-dlp[default,curl-cffi]" \
+        xattr
+
 FROM python:${PYTHON_VERSION}-slim-trixie
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -41,9 +62,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
-# yt-dlp is intentionally unpinned: this image's purpose is to ship the latest yt-dlp.
+# Install from the wheels built above only (--no-index), so nothing is compiled here.
 # hadolint ignore=DL3013
-RUN pip install -U --no-cache-dir \
+RUN --mount=type=bind,from=wheels,source=/wheels,target=/wheels \
+    pip install --no-cache-dir --no-index --find-links /wheels \
         "yt-dlp[default,curl-cffi]" \
         xattr
 
